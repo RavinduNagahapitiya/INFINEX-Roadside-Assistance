@@ -1,13 +1,12 @@
 <?php
 // INFINEX Roadside Assistance
-// Database connection
-// File: config/database.php
+// Production-ready database connection
 
-$host = '127.0.0.1';
-$port = 3306;
-$dbname = 'infinex_db';
-$username = 'root';
-$password = ''; // Default XAMPP MySQL root password is usually empty
+$host = getenv('DB_HOST') ?: '127.0.0.1';
+$port = getenv('DB_PORT') ?: '3306';
+$dbname = getenv('DB_NAME') ?: 'infinex_db';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: '';
 
 $charset = 'utf8mb4';
 
@@ -22,17 +21,15 @@ $options = [
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
 
-    // Compatibility if another INFINEX file uses $conn.
+    // Compatibility if another INFINEX file uses $conn
     $conn = $pdo;
 
 } catch (PDOException $e) {
-    // Local XAMPP development error.
     die(
         'Database connection failed. ' .
-        'Please make sure XAMPP MySQL is running and that ' .
-        'the database name, username, password, and port in ' .
-        'config/database.php are correct.<br><br>' .
-        'Error: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8')
+        'Please check the database configuration.<br>' .
+        'Error: ' .
+        htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8')
     );
 }
 ?>
